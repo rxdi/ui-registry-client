@@ -2,13 +2,13 @@
 
 Use with `global` registry
 ```bash
-registry add ./src --url https://ui-registry.graphql-server.com/upload
+registry add './src/**/*.ts' --url https://ui-registry.graphql-server.com/upload
 ```
 
 Use with `private` registry
 Defaults to `http://localhost:9000/upload`
 ```bash
-registry add ./src
+registry add './src/**/*.ts'
 ```
 
 

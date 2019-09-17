@@ -12,11 +12,11 @@ export class AddFile implements AbstractRunner<{ ETag: string }> {
     const file = nextOrDefault('add');
     // await this.zip.gZipFile(file, './pesho.tar.gz').toPromise();
     // await this.zip.readGzipFile('./pesho.tar.gz', './out/file.').toPromise();
-    const { archivePath } = await this.zip.gZipAll(
+    const { archivePath, archiveFiles } = await this.zip.gZipAll(
       file,
       nextOrDefault('--zip-name', './rxdi.tar.gz')
     );
-    function postRequest(url: string) {
+    function postRequest(url: string, archivedFiles: string[] = []) {
       return new Promise<{ ETag: string }>((resolve, reject) => {
         request.post(
           {
@@ -25,6 +25,9 @@ export class AddFile implements AbstractRunner<{ ETag: string }> {
                 nextOrDefault('--authorization', null) || config.token
             },
             url,
+            body: {
+              archivedFiles
+            },
             formData: {
               file: createReadStream(archivePath)
             }
@@ -47,7 +50,7 @@ export class AddFile implements AbstractRunner<{ ETag: string }> {
         config.registry ||
         'http://0.0.0.0:9000/upload';
       console.log(`Uploading file to endpoint: ${endpoint}`);
-      data = await postRequest(endpoint);
+      data = await postRequest(endpoint, archiveFiles);
       if (typeof(data) === 'string') {
         let parse: any = {};
         try {
@@ -62,7 +65,7 @@ export class AddFile implements AbstractRunner<{ ETag: string }> {
       console.error(e);
       console.log('Re-trying with endpoint: http://0.0.0.0:9000/upload...');
       try {
-        data = await postRequest('http://0.0.0.0:9000/upload');
+        data = await postRequest('http://0.0.0.0:9000/upload', archiveFiles);
       } catch (e) {
         console.error(e);
         console.log('Re-trying failed. Upload Failed!');
