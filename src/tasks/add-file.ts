@@ -49,7 +49,10 @@ export class AddFile implements AbstractRunner<{ ETag: string }> {
       console.log(`Uploading file to endpoint: ${endpoint}`);
       data = await postRequest(endpoint);
       if (typeof(data) === 'string') {
-        const parse =  JSON.parse(data);
+        let parse: any = {};
+        try {
+          parse =  JSON.parse(data);
+        } catch (e) {}
         if (parse.statusCode && parse.statusCode !== '200') {
           throw new Error(data);
         }

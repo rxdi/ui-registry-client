@@ -19,7 +19,7 @@ async function Main() {
     }
     Container.set(Config, config);
     const body = await Runner();
-    console.table(body);
+    console.log(body);
     process.exit(0);
   } catch (e) {
     console.log(e);
