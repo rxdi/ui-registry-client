@@ -3,7 +3,7 @@ import { createReadStream, createWriteStream, exists, lstat } from 'fs';
 import { createGzip, createGunzip } from 'zlib';
 import { Observable } from 'rxjs';
 import archiver from 'archiver';
-import { basename, join } from 'path';
+import { join } from 'path';
 import { promisify } from 'util';
 @Injectable()
 export class CompressionService {
@@ -73,7 +73,10 @@ export class CompressionService {
     }
     const archiveFiles = [];
     for (const file of files) {
-      const name = file.replace(process.cwd(), '').replace(/^\/|\/$/g, '').replace('.', '');
+      const name = file
+        .replace(process.cwd(), '')
+        .replace(/^\/|\/$/g, '')
+        .replace('.', '');
       archiveFiles.push(name);
       archive.file(file, {
         name
