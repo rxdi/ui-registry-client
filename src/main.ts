@@ -11,11 +11,15 @@ async function Main() {
     let config: Config = {} as Config;
     const configPath = join(homedir(), '.rxdi/config.json');
     if (await promisify(exists)(configPath)) {
-      config = require(configPath);
+      try {
+        config = require(configPath);
+      } catch (e) {
+        console.error(`${configPath} present but it is not a valid json`);
+      }
     }
     Container.set(Config, config);
     const body = await Runner();
-    console.log(body);
+    console.table(body);
     process.exit(0);
   } catch (e) {
     console.log(e);
