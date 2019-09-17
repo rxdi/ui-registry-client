@@ -53,7 +53,6 @@ export class CompressionService {
   public async gZipAll(folder: string, output: string) {
     const zip = createWriteStream(output);
     const archive = archiver('tar', {
-      gzip: true,
       zlib: { level: 9 } // Sets the compression level.
     });
     archive.on('error', function(err) {
@@ -75,8 +74,7 @@ export class CompressionService {
     for (const file of files) {
       const name = file
         .replace(process.cwd(), '')
-        .replace(/^\/|\/$/g, '')
-        .replace('.', '');
+        .replace(/^\/|\/$/g, '');
       archiveFiles.push(name);
       archive.file(file, {
         name
