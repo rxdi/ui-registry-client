@@ -17,6 +17,7 @@
     "@rxdi/core": "^0.7.18",
     "@types/archiver": "^3.0.0",
     "archiver": "^3.1.1",
+    "fast-glob": "^3.0.4",
     "request": "^2.88.0"
   },
   "devDependencies": {

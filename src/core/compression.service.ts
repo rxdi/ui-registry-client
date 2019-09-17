@@ -1,13 +1,14 @@
-import { PrivateCryptoModel, Injectable, FileService } from '@rxdi/core';
-import { createReadStream, createWriteStream, exists, lstat } from 'fs';
+import { PrivateCryptoModel, Injectable } from '@rxdi/core';
+import { createReadStream, createWriteStream } from 'fs';
 import { createGzip, createGunzip } from 'zlib';
 import { Observable } from 'rxjs';
 import archiver from 'archiver';
-import { join } from 'path';
-import { promisify } from 'util';
+import { join, basename } from 'path';
+import fg from 'fast-glob';
+
 @Injectable()
 export class CompressionService {
-  constructor(private fileService: FileService) {}
+  constructor() {}
   public gZipFile(
     input: string,
     output: string,
@@ -50,7 +51,7 @@ export class CompressionService {
     });
   }
 
-  public async gZipAll(folder: string, output: string) {
+  public async gZipAll(folders: string[], output: string) {
     const zip = createWriteStream(output);
     const archive = archiver('tar', {
       zlib: { level: 9 } // Sets the compression level.
@@ -59,26 +60,21 @@ export class CompressionService {
       throw err;
     });
     archive.pipe(zip);
-    let files: string[] = [];
-    if (await promisify(exists)(folder)) {
-      const file = await promisify(lstat)(folder);
-      if (file && file.isDirectory()) {
-        files = await this.fileService.fileWalker(folder).toPromise();
-      } else if (file.isFile()) {
-        files.push(folder);
-      }
-    } else {
-      throw new Error('Missing file or directory!');
-    }
     const archiveFiles = [];
-    for (const file of files) {
-      const name = file
-        .replace(process.cwd(), '')
-        .replace(/^\/|\/$/g, '');
-      archiveFiles.push(name);
-      archive.file(file, {
+    for (const name of await fg(folders, {
+      ignore: [
+        '!**/.git',
+        '!**/node_modules',
+        '!**/.cache',
+        '!**/.rxdi',
+        `!**/${basename(output)}`,
+      ],
+      dot: true
+    })) {
+      archive.file(name, {
         name
       });
+      archiveFiles.push(name);
       console.log(`Added ${name}`);
     }
     await archive.finalize();
