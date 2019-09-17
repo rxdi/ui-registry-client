@@ -1,7 +1,19 @@
 import { Runner } from './helpers/runner';
+import { promisify } from 'util';
+import { exists } from 'fs';
+import { join } from 'path';
+import { homedir } from 'os';
+import { Container } from '@rxdi/core';
+import { Config } from './tokens';
 
 async function Main() {
   try {
+    let config: Config = {} as Config;
+    const configPath = join(homedir(), '.rxdi/config.json');
+    if (await promisify(exists)(configPath)) {
+      config = require(configPath);
+    }
+    Container.set(Config, config);
     const body = await Runner();
     console.log(body);
     process.exit(0);

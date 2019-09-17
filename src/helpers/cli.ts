@@ -1,5 +1,5 @@
 
-export type Commands = 'add' | 'deploy' | '--url' | '--zip-name';
+export type Commands = 'add' | 'deploy' | '--url' | '--zip-name' | '--authorization';
 
 export const includes = (i: Commands) => process.argv.toString().includes(i);
 export const nextOrDefault = (i: Commands, fb: any = true, type = p => p) => {
