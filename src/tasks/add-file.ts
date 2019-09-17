@@ -25,8 +25,8 @@ export class AddFile implements AbstractRunner<{ ETag: string }> {
               nextOrDefault('--authorization', null) || config.token
           },
           url:
-            nextOrDefault('--url', 'http://0.0.0.0:9000/upload', null) ||
-            config.registry,
+            nextOrDefault('--url', null) ||
+            config.registry || 'http://0.0.0.0:9000/upload',
           formData: {
             file: createReadStream(archivePath)
           }
