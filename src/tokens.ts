@@ -6,6 +6,7 @@ export interface AbstractRunner<T> {
 
 export interface Config {
   token: string;
+  registry: string;
 }
 
 export const Config = new InjectionToken<Config>('rxdi-registry-client-config');

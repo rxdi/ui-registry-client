@@ -21,11 +21,12 @@ export class AddFile implements AbstractRunner<{ ETag: string }> {
       request.post(
         {
           headers: {
-            authorization: nextOrDefault('--authorization', null) || config.token
+            authorization:
+              nextOrDefault('--authorization', null) || config.token
           },
-          url: nextOrDefault('--url', 'http://0.0.0.0:9000/upload', v =>
-            String(v)
-          ),
+          url:
+            nextOrDefault('--url', 'http://0.0.0.0:9000/upload', null) ||
+            config.registry,
           formData: {
             file: createReadStream(archivePath)
           }
