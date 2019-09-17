@@ -1,8 +1,14 @@
-import { UploadFile } from './helpers/upload-file';
+import { Runner } from './helpers/runner';
 
 async function Main() {
-  const body = await UploadFile();
-  console.log(body);
+  try {
+    const body = await Runner();
+    console.log(body);
+    process.exit(0);
+  } catch (e) {
+    console.log(e);
+    process.exit(1);
+  }
 }
 
 Main();
