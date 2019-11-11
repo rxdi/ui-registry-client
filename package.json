@@ -1,6 +1,6 @@
 {
   "name": "@rxdi/ui-registry-client",
-  "version": "0.0.2",
+  "version": "0.7.38",
   "description": "",
   "main": "index.js",
   "scripts": {
